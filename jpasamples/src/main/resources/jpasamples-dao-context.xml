@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		 http://www.springframework.org/schema/jee 
+     	 http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+
+	<context:annotation-config/>
+
+	<context:component-scan base-package="org.sb.jpasamples"/>
+
+	<bean id="persistenceUnitManager"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+		<property name="persistenceXmlLocations">
+			<list>
+				<value>classpath*:META-INF/persistence.xml</value>
+			</list>
+		</property>
+		<property name="dataSources">
+			<map>
+				<entry key="localDataSource" value-ref="localDataSource" />
+			</map>
+		</property>
+		<!-- if no datasource is specified, use this one -->
+		<property name="defaultDataSource" ref="localDataSource" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitManager" ref="persistenceUnitManager" />
+		<property name="persistenceUnitName" value="jpasamplesPU" />
+	</bean>
+
+	<bean id="localDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/jpasamples"/>
+		<property name="username" value="root"/>
+		<property name="password" value=""/>
+	</bean>
+</beans>
